@@ -10,6 +10,9 @@ from mongo_queries import salary_filter
 
 # Будем хранить ссылки на вакансии в множестве
 PRIMARY_KEYS = set()
+# заменить проверку на
+# if collection.find_one('link', doc['link']):
+#     print('Документ существует в базе')
 
 
 def pprint_cursor_object(cursor):
