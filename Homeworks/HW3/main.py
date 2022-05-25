@@ -13,6 +13,7 @@ PRIMARY_KEYS = set()
 # заменить проверку на
 # if collection.find_one('link', doc['link']):
 #     print('Документ существует в базе')
+# Но лучше сделать update_one с параметром upsert=True
 
 
 def pprint_cursor_object(cursor):
