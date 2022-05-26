@@ -4,6 +4,18 @@ from datetime import datetime
 import requests
 
 
+# Функции для yandex
+def get_timestamp_yandex(time):
+    """ Комбинирует время новости и сегодняшнюю дату, так как не смог найти дату на странице с новостями """
+    time = list(map(int, time.split(':')))
+    timestamp = datetime.now().replace(hour=time[0], minute=time[1], second=0)
+    return timestamp
+
+
+def get_datetime_yandex(time):
+    return time + ' ' + str(datetime.now().date())
+
+
 # Общие функции
 def my_request(url):
     headers = {'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
@@ -15,24 +27,7 @@ def my_request(url):
         print("Что-то не так")
         exit()
 
-
-@contextmanager
-def connect_to_mongodb_collection(database_name, collection_name, delete=False):
-    """ Открывает соединение, удаляет коллекцию после отработки, если необходимо, и закрывает соединение """
-
-    client = MongoClient('127.0.0.1', 27017)
-    db = client[database_name]
-    collection = db[collection_name]
-
-    yield collection
-
-    count_documents = collection.count_documents({})
-    if delete:
-        db.drop_collection(collection_name)
-        print(f"Удалена коллеция с {count_documents} документами")
-    client.close()
-
-
+        
 def data_insert(collection, data):
     """ Добавляет данные в коллекцию """
 
@@ -47,7 +42,7 @@ def data_insert(collection, data):
     difference = news_after - news_before
     if difference:
         print(f'В коллекцию добавлено {difference} записей')
-
+        
 
 def multiple_call(count, pause):
     """ Декоратор вызывает функцию несколько раз с паузами """
@@ -63,15 +58,20 @@ def multiple_call(count, pause):
         return wrapped
 
     return my_decorator
+        
+        
+@contextmanager
+def connect_to_mongodb_collection(database_name, collection_name, delete=False):
+    """ Открывает соединение, удаляет коллекцию после отработки, если необходимо, и закрывает соединение """
 
+    client = MongoClient('127.0.0.1', 27017)
+    db = client[database_name]
+    collection = db[collection_name]
 
-# Функции для yandex
-def get_timestamp_yandex(time):
-    """ Комбинирует время новости и сегодняшнюю дату, так как не смог найти дату на странице с новостями """
-    time = list(map(int, time.split(':')))
-    timestamp = datetime.now().replace(hour=time[0], minute=time[1], second=0)
-    return timestamp
+    yield collection
 
-
-def get_datetime_yandex(time):
-    return time + ' ' + str(datetime.now().date())
+    count_documents = collection.count_documents({})
+    if delete:
+        db.drop_collection(collection_name)
+        print(f"Удалена коллеция с {count_documents} документами")
+    client.close()
