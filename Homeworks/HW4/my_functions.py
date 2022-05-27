@@ -18,8 +18,10 @@ def get_date_yandex(time):
     """ Комбинирует время новости и сегодняшнюю дату (не смог найти дату на странице) """
 
     today = datetime.now()
-    if 'вчера' in time:
-        today = today - timedelta(days=1)
+    time = time.replace('вчера', str(today.day - 1))
+    if len(time.split(' ')) > 2:
+        day = int(time.split(' ')[0])
+        today = today - timedelta(days=today.day - day)
         time = time[-5:]
 
     news_datetime = time + ' ' + str(today.date())
