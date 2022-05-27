@@ -20,9 +20,7 @@ def get_date_yandex(time):
     today = datetime.now()
     if 'вчера' in time:
         today = today - timedelta(days=1)
-        print(time)
         time = time[-5:]
-        print(time)
 
     news_datetime = time + ' ' + str(today.date())
     time = list(map(int, time.split(':')))
