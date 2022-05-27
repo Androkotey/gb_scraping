@@ -18,8 +18,8 @@ def get_info(url):
     """ Извлекает данные с одной страницы """
     dom = html.fromstring(my.my_request(url))
 
-    # защита от прямых ссылок на источник и от реальности :)
-    if not url.startswith('https://news.mail.ru/') and 'politics' not in url:
+    # защита от прямых ссылок на источник и от diafilm
+    if not url.startswith('https://news.mail.ru/') or 'diafilm' in url:
         return
 
     item_info = dict()
