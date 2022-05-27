@@ -71,13 +71,15 @@ def my_request(url):
         exit()
 
 
-def data_insert(collection, data):
+def data_insert(collection, data, index='title'):
     """ Добавляет данные в коллекцию """
+    # Удалить дубликаты из монго (сначала добавлял по ссылке, но у Яндекса они динамические...):
+    # db.news.find({}, {title:1}).sort({_id:1}).forEach(function(doc){db.news.remove({_id:{$gt:doc._id}, title:doc.title});})
 
     news_before = collection.count_documents({})
 
     for doc in data:
-        collection.update_one({'link': doc['link']},
+        collection.update_one({index: doc[index]},
                               {'$setOnInsert': {**doc}},
                               upsert=True)
 
@@ -85,6 +87,8 @@ def data_insert(collection, data):
     difference = news_after - news_before
     if difference:
         print(f'В коллекцию добавлено {difference} записей')
+    else:
+        print('Нечего добавлять')
 
 
 def multiple_call(count, pause):
