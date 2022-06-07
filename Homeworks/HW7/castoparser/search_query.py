@@ -1,1 +1,1 @@
-search_text = "краска"
+search_text = "пила"
